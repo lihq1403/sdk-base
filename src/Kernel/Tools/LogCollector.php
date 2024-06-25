@@ -25,6 +25,11 @@ class LogCollector
         ];
     }
 
+    public static function all(): array
+    {
+        return self::$logs;
+    }
+
     public static function list(string $key): array
     {
         return self::$logs[$key] ?? [];
