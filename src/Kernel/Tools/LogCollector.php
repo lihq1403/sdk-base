@@ -9,13 +9,22 @@ namespace Lihq1403\SdkBase\Kernel\Tools;
 
 class LogCollector
 {
+    /**
+     * 全局开关.
+     */
+    protected static bool $enabled = false;
+
+    /**
+     * 部分开关.
+     */
     protected static array $enables;
 
     protected static array $logs = [];
 
     public static function set(string $key, string $message, array $context = []): void
     {
-        if (! (self::$enables[$key] ?? false)) {
+        // 部分开关优先于全局开关，全局开关用作默认值就行
+        if (! (self::$enables[$key] ?? self::$enabled)) {
             return;
         }
 
@@ -35,18 +44,18 @@ class LogCollector
         return self::$logs[$key] ?? [];
     }
 
-    public static function clear(string $key): void
+    public static function clear(string $key = ''): void
     {
-        self::$logs[$key] = [];
+        empty($key) ? self::$logs = [] : self::$logs[$key] = [];
     }
 
-    public static function enable(string $key): void
+    public static function enable(string $key = ''): void
     {
-        self::$enables[$key] = true;
+        empty($key) ? self::$enabled = true : self::$enables[$key] = true;
     }
 
-    public static function disable(string $key): void
+    public static function disable(string $key = ''): void
     {
-        self::$enables[$key] = false;
+        empty($key) ? self::$enabled = false : self::$enables[$key] = false;
     }
 }

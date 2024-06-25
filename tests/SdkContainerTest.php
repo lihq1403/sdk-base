@@ -75,14 +75,14 @@ class SdkContainerTest extends TestCase
         $logs = LogCollector::list($sdkName);
         $this->assertEmpty($logs);
 
-        LogCollector::enable($sdkName);
+        LogCollector::enable();
         $app->logger->info('demo');
         $app->logger->collect('demo1');
         $logs = LogCollector::list($sdkName);
         $this->assertNotEmpty($logs);
 
-        LogCollector::clear($sdkName);
-        $logs = LogCollector::list($sdkName);
+        LogCollector::clear();
+        $logs = LogCollector::all();
         $this->assertEmpty($logs);
     }
 
