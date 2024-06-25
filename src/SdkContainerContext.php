@@ -11,7 +11,7 @@ class SdkContainerContext
 {
     private static array $containers = [];
 
-    public static function getSdkContainer(string $key): SdkContainer
+    public static function get(string $key): SdkContainer
     {
         $container = self::$containers[$key] ?? null;
         if (! $container instanceof SdkContainer) {
@@ -26,5 +26,10 @@ class SdkContainerContext
             throw new \RuntimeException("{$key} is already registered");
         }
         self::$containers[$key] = $container;
+    }
+
+    public static function has(string $key): bool
+    {
+        return isset(self::$containers[$key]);
     }
 }
