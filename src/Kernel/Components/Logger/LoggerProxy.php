@@ -7,6 +7,8 @@ declare(strict_types=1);
 
 namespace Lihq1403\SdkBase\Kernel\Components\Logger;
 
+use Lihq1403\SdkBase\Kernel\Tools\LogCollector;
+use Lihq1403\SdkBase\SdkContainer;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -19,13 +21,19 @@ use Psr\Log\LoggerInterface;
  * @method void notice(string $message, array $context = [])
  * @method void info(string $message, array $context = [])
  * @method void debug(string $message, array $context = [])
+ * @method void collect(string $message, array $context = [])
  */
 class LoggerProxy
 {
     protected ?LoggerInterface $logger = null;
 
-    public function __construct($logger = null)
+    private SdkContainer $sdkContainer;
+
+    public function __construct(SdkContainer $container)
     {
+        $this->sdkContainer = $container;
+
+        $logger = $container->config->get('component.logger');
         if ($logger) {
             if ($logger instanceof LoggerInterface) {
                 $this->logger = $logger;
@@ -42,6 +50,11 @@ class LoggerProxy
 
     public function __call($name, $arguments)
     {
+        LogCollector::set($this->sdkContainer->config->getSdkName(), ...$arguments);
+        if ($name === 'collect') {
+            // 仅收集
+            return;
+        }
         if ($this->logger && method_exists($this->logger, $name)) {
             $this->logger->{$name}(...$arguments);
         }

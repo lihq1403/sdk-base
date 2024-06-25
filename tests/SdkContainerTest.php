@@ -12,6 +12,7 @@ use Lihq1403\SdkBase\Kernel\Components\Client\ClientRequest;
 use Lihq1403\SdkBase\Kernel\Components\Config\Config;
 use Lihq1403\SdkBase\Kernel\Components\Exception\ExceptionBuilder;
 use Lihq1403\SdkBase\Kernel\Components\Logger\LoggerProxy;
+use Lihq1403\SdkBase\Kernel\Tools\LogCollector;
 use Lihq1403\SdkBase\SdkContainer;
 use PHPUnit\Framework\TestCase;
 
@@ -59,8 +60,9 @@ class SdkContainerTest extends TestCase
 
     public function testLogger()
     {
+        $sdkName = 'xxx';
         $config = [
-            'sdk_name' => 'xxx',
+            'sdk_name' => $sdkName,
             'exception_class' => BusinessException::class,
             'component' => [
                 'logger' => new EchoLogger(),
@@ -70,6 +72,18 @@ class SdkContainerTest extends TestCase
         $app = new SdkContainer($config);
         $app->logger->info('test');
         $this->assertTrue(true);
+        $logs = LogCollector::list($sdkName);
+        $this->assertEmpty($logs);
+
+        LogCollector::enable($sdkName);
+        $app->logger->info('demo');
+        $app->logger->collect('demo1');
+        $logs = LogCollector::list($sdkName);
+        $this->assertNotEmpty($logs);
+
+        LogCollector::clear($sdkName);
+        $logs = LogCollector::list($sdkName);
+        $this->assertEmpty($logs);
     }
 
     public function testException()

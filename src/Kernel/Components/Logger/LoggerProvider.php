@@ -16,7 +16,7 @@ class LoggerProvider implements ServiceProviderInterface
     public function register(Container $pimple)
     {
         $pimple['logger'] = function (SdkContainer $pimple) {
-            return new LoggerProxy($pimple->config->get('component.logger'));
+            return new LoggerProxy($pimple);
         };
     }
 }
