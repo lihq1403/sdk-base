@@ -8,6 +8,8 @@ declare(strict_types=1);
 namespace Lihq1403\SdkBase;
 
 use GuzzleHttp\ClientInterface;
+use Lihq1403\SdkBase\Kernel\Components\Alarm\Alarm;
+use Lihq1403\SdkBase\Kernel\Components\Alarm\AlarmProvider;
 use Lihq1403\SdkBase\Kernel\Components\Cache\CacheProvider;
 use Lihq1403\SdkBase\Kernel\Components\Client\ClientProvider;
 use Lihq1403\SdkBase\Kernel\Components\Client\ClientRequest;
@@ -26,6 +28,7 @@ use Psr\SimpleCache\CacheInterface;
  * @property ClientInterface $client
  * @property ClientRequest $clientRequest
  * @property ?CacheInterface $cache
+ * @property Alarm $alarm
  */
 class SdkContainer extends Container
 {
@@ -39,6 +42,7 @@ class SdkContainer extends Container
         LoggerProvider::class,
         CacheProvider::class,
         ClientProvider::class,
+        AlarmProvider::class,
     ];
 
     public function __construct(array $config = [])

@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Lihq1403\SdkBase\Tests;
 
 use GuzzleHttp\Client;
+use Lihq1403\SdkBase\Kernel\Components\Alarm\MessageTemplate\DingMarkdown;
 use Lihq1403\SdkBase\Kernel\Components\Client\ClientRequest;
 use Lihq1403\SdkBase\Kernel\Components\Config\Config;
 use Lihq1403\SdkBase\Kernel\Components\Exception\ExceptionBuilder;
@@ -149,5 +150,36 @@ class SdkContainerTest extends TestCase
         $app = new SdkContainer($config);
         $this->assertNotNull($app->cache);
         $this->assertFalse($app->cache->has('test'));
+    }
+
+    public function testAlarm()
+    {
+        $this->markTestSkipped('skip test alarm');
+
+        $config = [
+            'sdk_name' => 'xxx',
+            'exception_class' => BusinessException::class,
+            'component' => [
+                'cache' => new NoCache(),
+            ],
+            'alarm' => [
+                'ding' => [
+                    'default' => [
+                        'token' => '123',
+                        'secret' => '123',
+                    ],
+                ],
+            ],
+        ];
+        $app = new SdkContainer($config);
+
+        $message = DingMarkdown::make()
+            ->setTitle('测试告警')
+            ->setDescription('描述文本')
+            ->setContext([
+                'key' => 'value',
+            ]);
+        $app->alarm->send($message);
+        $this->assertTrue(true);
     }
 }
